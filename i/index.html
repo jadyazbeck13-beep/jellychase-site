@@ -108,7 +108,22 @@
   </div>
 </main>
 <footer><a href="/privacy/">Privacy Policy</a></footer>
+<script src="/store.js"></script>
 <script>
+(function () {
+  // "Open in the game": if the game isn't installed the page stays visible,
+  // so after a moment send iPhone to the App Store and Android to Google Play.
+  var open = document.getElementById('open'), store = jcStoreUrl();
+  if (store) {
+    var soon = document.querySelector('.soon');
+    soon.innerHTML = 'No game yet? <a href="' + store + '" style="color:#FFC93C">Get it free</a>';
+  }
+  open.addEventListener('click', function () {
+    if (!store) return;
+    var t = setTimeout(function () { if (!document.hidden) location.href = store; }, 1600);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); }, { once: true });
+  });
+})();
 (function () {
   var c = (new URLSearchParams(location.search).get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
   var n = (new URLSearchParams(location.search).get('n') || '').replace(/[<>&"]/g, '').slice(0, 14);
