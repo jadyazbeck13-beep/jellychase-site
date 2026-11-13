@@ -104,6 +104,7 @@
 <script>
 (function () {
   // Phones see only their own store; computers see both.
+  if (!window.jcOS) return; // store.js missing: keep both Coming soon buttons
   var os = jcOS(), S = window.JC_STORE;
   [['ios', 'Download on the'], ['android', 'Get it on']].forEach(function (x) {
     var b = document.getElementById('b-' + x[0]);

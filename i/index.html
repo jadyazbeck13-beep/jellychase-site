@@ -113,7 +113,7 @@
 (function () {
   // "Open in the game": if the game isn't installed the page stays visible,
   // so after a moment send iPhone to the App Store and Android to Google Play.
-  var open = document.getElementById('open'), store = jcStoreUrl();
+  var open = document.getElementById('open'), store = window.jcStoreUrl ? jcStoreUrl() : '';
   if (store) {
     var soon = document.querySelector('.soon');
     soon.innerHTML = 'No game yet? <a href="' + store + '" style="color:#FFC93C">Get it free</a>';

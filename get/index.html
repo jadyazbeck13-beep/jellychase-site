@@ -8,7 +8,7 @@
 <script src="/store.js"></script>
 <script>
   // jellychase.app/get : iPhone -> App Store, Android -> Google Play, everything else -> home page
-  location.replace(jcStoreUrl() || '/');
+  location.replace((window.jcStoreUrl && jcStoreUrl()) || '/'); // store.js missing (file preview) -> home
 </script>
 </head>
 <body style="background:#4A2170"></body>
