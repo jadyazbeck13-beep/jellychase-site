@@ -8,9 +8,15 @@
 <meta name="description" content="Jelly Chase. Coming soon to iPhone and Android.">
 <link rel="icon" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta property="og:title" content="Jelly Chase">
-<meta property="og:description" content="Join me in Jelly Chase. We both get 50 coins and 3 powers!">
-<meta property="og:image" content="https://jellychase.app/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jelly Chase">
+<meta property="og:title" content="Play Jelly Chase with me! 🎁">
+<meta property="og:description" content="Tap to open the game. We both get a gift right away.">
+<meta property="og:image" content="https://jellychase.app/og/w1.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jellychase.app/og/w1.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
@@ -83,6 +89,9 @@
   .open { text-decoration: none; padding: 14px 34px; }
   .code { font-family: 'Lilita One', sans-serif; font-size: 30px; letter-spacing: 6px; background: #0003; border-radius: 14px; padding: 6px 16px; cursor: pointer; border: 2px dashed #fff6; color: #fff; }
   .soon { font-size: 14px; opacity: .85; }
+  .pic { width: min(420px, 92vw); height: auto; border-radius: 26px; border: 4px solid #fff; box-shadow: 0 10px 0 #2B0F45, 0 22px 30px #0006; }
+  .gift i.heart { background: #FF4D6D; border-radius: 0; clip-path: path('M13 24 C4 17 0 12 1 7 C2 2 9 0 13 6 C17 0 24 2 25 7 C26 12 22 17 13 24 Z'); }
+  .then { font-size: 13px; font-weight: 800; opacity: .85; letter-spacing: 1px; text-transform: uppercase; }
 </style>
 </head>
 <body>
@@ -96,12 +105,13 @@
   <i style="--s:24px;--c:#48D6A8;left:46%;--d:19s;--w:-12s"></i>
 </div>
 <main>
-  <img class="hero" src="/jelly.png" alt="Jelly Chase jelly" width="480" height="428">
+  <img class="pic" src="/og/w1.jpg" alt="A jelly in Jelly Planet" width="1200" height="630">
   <h1>Jelly <span>Chase</span></h1>
   <div class="card">
     <h2 id="who">You're invited!</h2>
-    <div class="gifts"><span class="gift"><i class="coin"></i>+50</span><span class="gift"><i class="pow"></i>+3</span></div>
-    <div class="steps" aria-label="Play to level 10, then you both get the gift">📲 <b>›</b> 🎮 <b>›</b> <span class="lv">Lv 10</span> <b>›</b> 🎁</div>
+    <div class="gifts" aria-label="Right away: 1 life and 10 coins each"><span class="gift"><i class="heart"></i>+1</span><span class="gift"><i class="coin"></i>+10</span></div>
+    <div class="then"><span class="lv">Lv 10</span> &nbsp;then</div>
+    <div class="gifts" aria-label="At level 10: 50 coins and 3 powers each"><span class="gift"><i class="coin"></i>+50</span><span class="gift"><i class="pow"></i>+3</span></div>
     <a class="badge open" id="open" href="petchase://invite"><div><b>Open in the game</b></div></a>
     <button class="code" id="code" type="button" hidden aria-label="Copy invite code"></button>
     <p class="soon">No game yet? Coming soon to iPhone and Android.</p>
@@ -130,6 +140,8 @@
   if (n) document.getElementById('who').textContent = n + ' invited you!';
   if (!c) return;
   document.getElementById('open').href = 'petchase://invite?c=' + c;
+  // one tap from the chat: try to open the game straight away (if it is not installed the page just stays)
+  try { if (!sessionStorage.getItem('jcTried')) { sessionStorage.setItem('jcTried', '1'); setTimeout(function () { location.href = 'petchase://invite?c=' + c; }, 350); } } catch (e) {}
   var b = document.getElementById('code'); b.textContent = c; b.hidden = false;
   b.onclick = function () { try { navigator.clipboard.writeText(c); b.textContent = '✓ ' + c; } catch (e) {} };
 })();
