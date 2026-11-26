@@ -45,7 +45,7 @@ h1 i{width:12px;height:12px;border-radius:50%;background:var(--coral);display:in
 @media(prefers-reduced-motion:reduce){.tag::before{animation:none!important}}
 .hint{position:absolute;left:12px;bottom:10px;font-size:13px;color:#5b6064;background:rgba(255,255,255,.8);padding:4px 10px;border-radius:8px;pointer-events:none}
 .panel{background:var(--bg);padding:14px max(3vw,14px) 40px}
-.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:none;border:0;background:transparent;padding:10px 12px;min-height:44px;border-bottom:2px solid transparent;cursor:pointer;font-weight:600;color:var(--mute)}
 .tabs button.on{color:var(--ink);border-color:var(--coral)}
 .count{background:var(--coral);color:#fff;border-radius:999px;font-size:12px;padding:1px 7px;margin-left:4px}
@@ -243,9 +243,9 @@ const OUTFITS=await unlock();
 const API_URL='https://europe-west1-jelly-chase-764b5.cloudfunctions.net/agentChat';
 async function officeKey(){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('hq-office:'+OFFICE_PW));return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('');}
 function makeApiSample(){
-  const call=async body=>{const r=await fetch(API_URL,{method:'POST',headers:{'content-type':'application/json','x-office-key':await officeKey()},body:JSON.stringify(body)});
+  const call=async body=>{let r;try{r=await fetch(API_URL,{method:'POST',headers:{'content-type':'application/json','x-office-key':await officeKey()},body:JSON.stringify(body)});}catch{const e=new Error('their brain isn’t online yet. Run setup-agents.bat on your PC, then try again.');e.code='server';throw e;}
     let j={};try{j=await r.json();}catch{}
-    if(!r.ok){const e=new Error(j.error||('error '+r.status));e.code=r.status===401?'not_granted':r.status===429?'rate_limited':'server';throw e;}return j;};
+    if(!r.ok){if(r.status===404){const e=new Error('their brain isn’t online yet. Run setup-agents.bat on your PC.');e.code='server';throw e;}const e=new Error(j.error||('error '+r.status));e.code=r.status===401?'not_granted':r.status===429?'rate_limited':'server';throw e;}return j;};
   const sample=async(input,opts={})=>{
     const messages=typeof input==='string'?[{role:'user',content:input}]:input.slice();
     const tools=(opts.tools||[]).map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema||{type:'object',properties:{}}}));
@@ -475,7 +475,7 @@ Return only JSON: {"summary":"one sentence plan","tasks":[{"agent":"<id>","task"
     await Promise.all([worker(),worker()]);
     setStatus('cos','working','Writing the wrap-up');
     await runAgent(cos,`Write the owner a short wrap-up of this brief: "${brief}". Read the team's outputs, say what is done, what needs their approval, and the next step.`);
-  }catch(e){log(`${cos.name} could not finish: ${e.message||e}`);if(e.code==='not_granted')noAccess();settle('cos');}
+  }catch(e){log(`${cos.name} couldn’t start: ${e.message||e}`);if(e.code==='not_granted')noAccess();settle('cos');}
   S.busy=false;render();
 }
 
